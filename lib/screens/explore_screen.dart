@@ -1,12 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:fooderlich/components/friend_post_tile.dart';
+
 import '../components/components.dart';
 import '../api/mock_fooderlich_service.dart';
 import '../models/models.dart';
-class ExploreScreen  extends StatelessWidget {
-  final mockService = MockFooderlichService();
+class ExploreScreen  extends StatefulWidget {
+
   ExploreScreen ({Key? key}) : super(key: key);
 
+  @override
+  _ExploreScreenState createState() => _ExploreScreenState();
+}
+
+class _ExploreScreenState extends State<ExploreScreen> {
+  final mockService = MockFooderlichService();
+  ScrollController _controller = ScrollController();
+  @override
+  void initState() {
+    _controller.addListener(_onScrollEvent);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_onScrollEvent);
+    super.dispose();
+  }
+
+  void _onScrollEvent() {
+    final extentBefore = _controller.position.extentBefore;
+    print('Extent Before: $extentBefore');
+  }
   @override
   @override
   Widget build(BuildContext context) {
@@ -20,6 +43,7 @@ class ExploreScreen  extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
           // 5
           return ListView(
+            controller: _controller,
             // 6
             scrollDirection: Axis.vertical,
             children: [
@@ -28,7 +52,7 @@ class ExploreScreen  extends StatelessWidget {
               // 8
               const SizedBox(height: 16),
               // 9
-              // TODO: Replace this with FriendPostListView
+
 
               FriendPostListView(friendPosts: snapshot.data?.friendPosts ?? []),
 
@@ -41,5 +65,4 @@ class ExploreScreen  extends StatelessWidget {
       },
     );
   }
-
 }
